@@ -1,0 +1,3 @@
+www.witop.com.cn              	182.92.27.137
+mail.witop.com.cn             	211.150.64.54
+ftp.witop.com.cn              	182.92.27.137
