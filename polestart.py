@@ -32,6 +32,6 @@ if __name__ == '__main__':
                  output=options.output)
     
     dnsBrute.run()
-    scan = doNmap(dnsBrute.all_ip, options.arguments, options.nmap_thread)
+    scan = doNmap(args[0], dnsBrute.all_ip, options.arguments, options.nmap_thread)
 
     scan.run()
