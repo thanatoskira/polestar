@@ -3,7 +3,6 @@
 # A simple and fast sub domain brute tool
 # my[at]lijiejie.com (http://www.lijiejie.com)
 
-import optparse
 import Queue
 import sys
 import dns.resolver
@@ -11,8 +10,6 @@ import threading
 import time
 import optparse
 from lib.consle_width import getTerminalSize
-from nmap import nmap
-from time import sleep
 
 
 class DNSBrute:
@@ -49,6 +46,7 @@ class DNSBrute:
         with open(self.names_file) as f:
             for line in f:
                 sub = line.strip()
+                #print(sub)
                 if sub: self.queue.put(sub)
 
     def _load_next_sub(self):
@@ -81,7 +79,7 @@ class DNSBrute:
             sub = self.queue.get(timeout=1.0)
             try:
                 cur_sub_domain = sub + '.' + self.target
-                answers = d.resolvers[thread_id].query(cur_sub_domain)
+                answers = self.resolvers[thread_id].query(cur_sub_domain)
                 is_wildcard_record = False
                 if answers:
                     for answer in answers:
@@ -134,94 +132,5 @@ class DNSBrute:
         print('\n'.join(self.all_ip))
         print('\033[0m')
         self.ipfile.write('\n'.join(self.all_ip))     #将扫出的域名所有ip导出到文件中
-
-class DoScan:
-
-    def __init__(self, all_ip, arguments):
-        self.arguments = arguments
-        self.nm = nmap.PortScanner()
-        self.thread_count = len(all_ip)/3 if len(all_ip) % 3 == 0 else len(all_ip)/3 + 1    #每3个ip放在一个线程里
-        all_ip = list(all_ip)
-        #print(all_ip)
-        #print(self.thread_count)
-        self.hosts = [all_ip[index: index+self.thread_count] for index in range(0, len(all_ip), self.thread_count)]  #将ip根据线程数进行等分
-        self.thread = []
-        print('Count of All Thread: ' + str(self.thread_count))
-        for thread_name in range(self.thread_count):       #根据线程数创建线程
-            self.thread.append(threading.Thread(target=self.do_Scan, args=(self.hosts[thread_name],), name=str(thread_name)))
-        #print(self.thread)
-
-    def do_Scan(self, hosts):
-        #try:
-        hosts = ' '.join(hosts)
-        self.result = self.nm.scan(hosts = hosts, arguments = self.arguments)
-        self.get_Result()
-        """
-        except Exception as e:
-            print('\033[1;31;40m[-]Thread Start Failure...')
-            print('[-]Error: ' + str(e) + '\n\033[0m')
-            exit(-1)
-        """
-                
-    def get_Result(self):
-        self.result = self.result['scan']
-        for target in self.result:
-            print('\n\033[1;32;40m' + target + ' named ')
-            print(self.result)
-            print(self.result[target])
-            target = self.result[target]
-            print(target['hostnames']['name'] + ' is ' + target['status']['state'] + '.')
-            for tcp_port in target['tcp']:
-                state = target['tcp'][tcp_port]['state']
-                version = target['tcp'][tcp_port]['version']
-                print(tcp_port + '\t' + state + '\t' + version)
-                print('\033[0m')
-
-    def run(self):
-        for i in range(self.thread_count):
-            print('[*]Thread number ' + str(i) + ' Start')
-            self.thread[i].setDaemon(True)
-            self.thread[i].start()
-            #sleep(1)    #等待线程启动正常
-            #if not self.thread[i].isAlive(): #线程启动失败则退出
-            #    exit(-1)
-        
-        for i in range(self.thread_count):
-            self.thread[i].join()
-        """
-        while self.thread[i].isAlive():
-            for i in range(3):
-                out = '\033[1;33;40m\r[*]Start Namp Scaning' + '.' * (i+1) + ' '*(3-i) + '\033[0m\r'
-                sys.stdout.write(out)
-                sys.stdout.flush()
-                sleep(1)
-        """
-
-if __name__ == '__main__':
-    parser = optparse.OptionParser('usage: %prog [options] target')
-    parser.add_option('-t', '--threads', dest='threads_num',
-              default=10, type='int',
-              help='Number of threads. default = 10')
-    parser.add_option('-f', '--file', dest='names_file', default='subnames.txt',
-              type='string', help='Dict file used to brute sub names')
-    parser.add_option('-o', '--output', dest='output', default=None,
-              type='string', help='Output file name. default is {target}.txt')
-    parser.add_option('-a', '--append', dest='arguments', default='--open -v -p-',
-              type='string', help='The arguments of Nmap, like "-sS -sV"')
-
-    (options, args) = parser.parse_args()
-    if len(args) < 1:
-        parser.print_help()
-        sys.exit(0)
-
-    d = DNSBrute(target=args[0], names_file=options.names_file,
-                 threads_num=options.threads_num,
-                 output=options.output)
-    d.run()
-
-    scan = DoScan(d.all_ip, options.arguments)
-
-    scan.run()
-    #scan.get_Result()
-    
-
+        self.outfile.close()
+        self.ipfile.close()

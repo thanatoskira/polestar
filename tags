@@ -76,7 +76,7 @@ DLV.py	install/dnspython-1.12.0/dns/rdtypes/ANY/DLV.py	1;"	kind:file	line:1
 DNAME	install/dnspython-1.12.0/dns/rdatatype.py	/^DNAME = 39$/;"	kind:variable	line:69
 DNAME	install/dnspython-1.12.0/dns/rdtypes/ANY/DNAME.py	/^class DNAME(dns.rdtypes.nsbase.UncompressedNS):$/;"	kind:class	line:18
 DNAME.py	install/dnspython-1.12.0/dns/rdtypes/ANY/DNAME.py	1;"	kind:file	line:1
-DNSBrute	subDomainsBrute.py	/^class DNSBrute:$/;"	kind:class	line:17
+DNSBrute	polestar.py	/^class DNSBrute:$/;"	kind:class	line:18
 DNSException	install/dnspython-1.12.0/dns/exception.py	/^class DNSException(Exception):$/;"	kind:class	line:18
 DNSKEY	install/dnspython-1.12.0/dns/rdatatype.py	/^DNSKEY = 48$/;"	kind:variable	line:77
 DNSKEY	install/dnspython-1.12.0/dns/rdtypes/ANY/DNSKEY.py	/^class DNSKEY(dns.rdata.Rdata):$/;"	kind:class	line:71
@@ -92,7 +92,7 @@ DSA	install/dnspython-1.12.0/dns/dnssec.py	/^DSA = 3$/;"	kind:variable	line:41
 DSANSEC3SHA1	install/dnspython-1.12.0/dns/dnssec.py	/^DSANSEC3SHA1 = 6$/;"	kind:variable	line:44
 DSBase	install/dnspython-1.12.0/dns/rdtypes/dsbase.py	/^class DSBase(dns.rdata.Rdata):$/;"	kind:class	line:21
 DifferingCovers	install/dnspython-1.12.0/dns/rdataset.py	/^class DifferingCovers(dns.exception.DNSException):$/;"	kind:class	line:31
-DoScan	subDomainsBrute.py	/^class DoScan:$/;"	kind:class	line:133
+DoScan	polestar.py	/^class DoScan:$/;"	kind:class	line:138
 ECC	install/dnspython-1.12.0/dns/dnssec.py	/^ECC = 4$/;"	kind:variable	line:42
 ECDSAP256SHA256	install/dnspython-1.12.0/dns/dnssec.py	/^ECDSAP256SHA256 = 13$/;"	kind:variable	line:48
 ECDSAP384SHA384	install/dnspython-1.12.0/dns/dnssec.py	/^ECDSAP384SHA384 = 14$/;"	kind:variable	line:49
@@ -246,7 +246,7 @@ QR	install/dnspython-1.12.0/dns/flags.py	/^QR = 0x8000$/;"	kind:variable	line:20
 QUERY	install/dnspython-1.12.0/dns/opcode.py	/^QUERY = 0$/;"	kind:variable	line:20
 QUESTION	install/dnspython-1.12.0/dns/renderer.py	/^QUESTION = 0$/;"	kind:variable	line:26
 QUOTED_STRING	install/dnspython-1.12.0/dns/tokenizer.py	/^QUOTED_STRING = 4$/;"	kind:variable	line:40
-Queue	subDomainsBrute.py	/^import Queue$/;"	kind:namespace	line:7
+Queue	polestar.py	/^import Queue$/;"	kind:namespace	line:7
 RA	install/dnspython-1.12.0/dns/flags.py	/^RA = 0x0080$/;"	kind:variable	line:24
 RD	install/dnspython-1.12.0/dns/flags.py	/^RD = 0x0100$/;"	kind:variable	line:23
 REFUSED	install/dnspython-1.12.0/dns/rcode.py	/^REFUSED = 5$/;"	kind:variable	line:25
@@ -476,8 +476,8 @@ __init__	install/dnspython-1.12.0/dns/update.py	/^    def __init__(self, zone, r
 __init__	install/dnspython-1.12.0/dns/zone.py	/^    def __init__(self, origin, rdclass=dns.rdataclass.IN, relativize=True):$/;"	kind:member	line:82
 __init__	install/dnspython-1.12.0/dns/zone.py	/^    def __init__(self, tok, origin, rdclass, relativize, zone_factory=Zone,$/;"	kind:member	line:578
 __init__	install/dnspython-1.12.0/tests/test_resolver.py	/^    def __init__(self, expiration):$/;"	kind:member	line:51
-__init__	subDomainsBrute.py	/^    def __init__(self, filename):$/;"	kind:member	line:135
-__init__	subDomainsBrute.py	/^    def __init__(self, target, names_file, threads_num, output):$/;"	kind:member	line:18
+__init__	polestar.py	/^    def __init__(self, all_ip, arguments):$/;"	kind:member	line:140
+__init__	polestar.py	/^    def __init__(self, target, names_file, threads_num, output):$/;"	kind:member	line:19
 __init__.py	install/dnspython-1.12.0/dns/__init__.py	1;"	kind:file	line:1
 __init__.py	install/dnspython-1.12.0/dns/rdtypes/ANY/__init__.py	1;"	kind:file	line:1
 __init__.py	install/dnspython-1.12.0/dns/rdtypes/IN/__init__.py	1;"	kind:file	line:1
@@ -695,9 +695,9 @@ _is_sha384	install/dnspython-1.12.0/dns/dnssec.py	/^def _is_sha384(algorithm):$/
 _is_sha512	install/dnspython-1.12.0/dns/dnssec.py	/^def _is_sha512(algorithm):$/;"	kind:function	line:176
 _keep_output	install/dnspython-1.12.0/tests/test_zone.py	/^_keep_output = False$/;"	kind:variable	line:98
 _leading_zero	install/dnspython-1.12.0/dns/ipv6.py	/^_leading_zero = re.compile(r'0+([0-9a-f]+)')$/;"	kind:variable	line:23
-_load_dns_servers	subDomainsBrute.py	/^    def _load_dns_servers(self):$/;"	kind:member	line:36
-_load_next_sub	subDomainsBrute.py	/^    def _load_next_sub(self):$/;"	kind:member	line:53
-_load_sub_names	subDomainsBrute.py	/^    def _load_sub_names(self):$/;"	kind:member	line:46
+_load_dns_servers	polestar.py	/^    def _load_dns_servers(self):$/;"	kind:member	line:37
+_load_next_sub	polestar.py	/^    def _load_next_sub(self):$/;"	kind:member	line:54
+_load_sub_names	polestar.py	/^    def _load_sub_names(self):$/;"	kind:member	line:47
 _make_algorithm_id	install/dnspython-1.12.0/dns/dnssec.py	/^def _make_algorithm_id(algorithm):$/;"	kind:function	line:192
 _make_hash	install/dnspython-1.12.0/dns/dnssec.py	/^def _make_hash(algorithm):$/;"	kind:function	line:179
 _mapped_prefix	install/dnspython-1.12.0/dns/ipv6.py	/^_mapped_prefix = '\\x00' * 10 + '\\xff\\xff'$/;"	kind:variable	line:165
@@ -725,7 +725,7 @@ _poll_for	install/dnspython-1.12.0/dns/query.py	/^def _poll_for(fd, readable, wr
 _polling_backend	install/dnspython-1.12.0/dns/query.py	/^    _polling_backend = _poll_for$/;"	kind:variable	line:135
 _polling_backend	install/dnspython-1.12.0/dns/query.py	/^    _polling_backend = _select_for$/;"	kind:variable	line:137
 _pows	install/dnspython-1.12.0/dns/rdtypes/ANY/LOC.py	/^_pows = (1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L,$/;"	kind:variable	line:22
-_print_progress	subDomainsBrute.py	/^    def _print_progress(self):$/;"	kind:member	line:67
+_print_progress	polestar.py	/^    def _print_progress(self):$/;"	kind:member	line:68
 _proto_tcp	install/dnspython-1.12.0/dns/rdtypes/IN/WKS.py	/^_proto_tcp = socket.getprotobyname('tcp')$/;"	kind:variable	line:22
 _proto_udp	install/dnspython-1.12.0/dns/rdtypes/IN/WKS.py	/^_proto_udp = socket.getprotobyname('udp')$/;"	kind:variable	line:23
 _protocols_for_socktype	install/dnspython-1.12.0/dns/resolver.py	/^_protocols_for_socktype = {$/;"	kind:variable	line:1020
@@ -735,7 +735,7 @@ _resolver	install/dnspython-1.12.0/dns/resolver.py	/^_resolver = None$/;"	kind:v
 _rollback	install/dnspython-1.12.0/dns/renderer.py	/^    def _rollback(self, where):$/;"	kind:member	line:103
 _rr_line	install/dnspython-1.12.0/dns/message.py	/^    def _rr_line(self, section):$/;"	kind:member	line:894
 _rr_line	install/dnspython-1.12.0/dns/zone.py	/^    def _rr_line(self):$/;"	kind:member	line:599
-_scan	subDomainsBrute.py	/^    def _scan(self):$/;"	kind:member	line:75
+_scan	polestar.py	/^    def _scan(self):$/;"	kind:member	line:76
 _select_for	install/dnspython-1.12.0/dns/query.py	/^def _select_for(fd, readable, writable, error, timeout):$/;"	kind:function	line:78
 _set_float_altitude	install/dnspython-1.12.0/dns/rdtypes/ANY/GPOS.py	/^    def _set_float_altitude(self, value):$/;"	kind:member	line:152
 _set_float_latitude	install/dnspython-1.12.0/dns/rdtypes/ANY/GPOS.py	/^    def _set_float_latitude(self, value):$/;"	kind:member	line:134
@@ -760,7 +760,7 @@ _unget_char	install/dnspython-1.12.0/dns/tokenizer.py	/^    def _unget_char(self
 _unknown_class_pattern	install/dnspython-1.12.0/dns/rdataclass.py	/^_unknown_class_pattern = re.compile('CLASS([0-9]+)$', re.I);$/;"	kind:variable	line:66
 _unknown_type_pattern	install/dnspython-1.12.0/dns/rdatatype.py	/^_unknown_type_pattern = re.compile('TYPE([0-9]+)$', re.I);$/;"	kind:variable	line:178
 _unspecified_bound	install/dnspython-1.12.0/dns/wiredata.py	/^_unspecified_bound = _SliceUnspecifiedBound('')[1:]$/;"	kind:variable	line:32
-_update_scan_count	subDomainsBrute.py	/^    def _update_scan_count(self):$/;"	kind:member	line:62
+_update_scan_count	polestar.py	/^    def _update_scan_count(self):$/;"	kind:member	line:63
 _v4_ending	install/dnspython-1.12.0/dns/ipv6.py	/^_v4_ending = re.compile(r'(.*):(\\d+\\.\\d+\\.\\d+\\.\\d+)$')$/;"	kind:variable	line:92
 _validate	install/dnspython-1.12.0/dns/dnssec.py	/^def _validate(rrset, rrsigset, keys, origin=None, now=None):$/;"	kind:function	line:353
 _validate_float_string	install/dnspython-1.12.0/dns/rdtypes/ANY/GPOS.py	/^def _validate_float_string(what):$/;"	kind:function	line:20
@@ -925,7 +925,7 @@ copy	install/dnspython-1.12.0/dns/set.py	/^    def copy(self):$/;"	kind:member	l
 covers	install/dnspython-1.12.0/dns/rdata.py	/^    def covers(self):$/;"	kind:member	line:144
 covers	install/dnspython-1.12.0/dns/rdtypes/ANY/RRSIG.py	/^    def covers(self):$/;"	kind:member	line:84
 create_string_buffer	lib/consle_width.py	/^        from ctypes import windll, create_string_buffer$/;"	kind:namespace	line:28
-d	subDomainsBrute.py	/^    d = DNSBrute(target=args[0], names_file=options.names_file,$/;"	kind:variable	line:164
+d	polestar.py	/^    d = DNSBrute(target=args[0], names_file=options.names_file,$/;"	kind:variable	line:217
 ddns.py	install/dnspython-1.12.0/examples/ddns.py	1;"	kind:file	line:1
 default_algorithm	install/dnspython-1.12.0/dns/tsig.py	/^default_algorithm = HMAC_MD5$/;"	kind:variable	line:64
 default_resolver	install/dnspython-1.12.0/dns/resolver.py	/^default_resolver = None$/;"	kind:variable	line:962
@@ -1214,13 +1214,13 @@ dns	install/dnspython-1.12.0/tests/test_zone.py	/^import dns.rdataclass$/;"	kind
 dns	install/dnspython-1.12.0/tests/test_zone.py	/^import dns.rdatatype$/;"	kind:namespace	line:24
 dns	install/dnspython-1.12.0/tests/test_zone.py	/^import dns.rrset$/;"	kind:namespace	line:25
 dns	install/dnspython-1.12.0/tests/test_zone.py	/^import dns.zone$/;"	kind:namespace	line:26
-dns	subDomainsBrute.py	/^import dns.resolver$/;"	kind:namespace	line:9
+dns	polestar.py	/^import dns.resolver$/;"	kind:namespace	line:9
 dnssec	install/dnspython-1.12.0/dns/rdtypes/ANY/CERT.py	/^import dns.dnssec$/;"	kind:namespace	line:20
 dnssec	install/dnspython-1.12.0/dns/rdtypes/ANY/DNSKEY.py	/^import dns.dnssec$/;"	kind:namespace	line:20
 dnssec	install/dnspython-1.12.0/dns/rdtypes/ANY/RRSIG.py	/^import dns.dnssec$/;"	kind:namespace	line:20
 dnssec	install/dnspython-1.12.0/tests/test_dnssec.py	/^import dns.dnssec$/;"	kind:namespace	line:18
 dnssec.py	install/dnspython-1.12.0/dns/dnssec.py	1;"	kind:file	line:1
-do_Scan	subDomainsBrute.py	/^    def do_Scan(self):$/;"	kind:member	line:142
+do_Scan	polestar.py	/^    def do_Scan(self, hosts):$/;"	kind:member	line:154
 dsbase	install/dnspython-1.12.0/dns/rdtypes/ANY/DLV.py	/^import dns.rdtypes.dsbase$/;"	kind:namespace	line:16
 dsbase	install/dnspython-1.12.0/dns/rdtypes/ANY/DS.py	/^import dns.rdtypes.dsbase$/;"	kind:namespace	line:16
 dsbase.py	install/dnspython-1.12.0/dns/rdtypes/dsbase.py	1;"	kind:file	line:1
@@ -1497,7 +1497,8 @@ get	install/dnspython-1.12.0/dns/resolver.py	/^    def get(self, key):$/;"	kind:
 get	install/dnspython-1.12.0/dns/tokenizer.py	/^    def get(self, want_leading = False, want_comment = False):$/;"	kind:member	line:284
 get	install/dnspython-1.12.0/dns/zone.py	/^    def get(self, key):$/;"	kind:member	line:161
 getTerminalSize	lib/consle_width.py	/^def getTerminalSize():$/;"	kind:function	line:9
-getTerminalSize	subDomainsBrute.py	/^from lib.consle_width import getTerminalSize$/;"	kind:namespace	line:13
+getTerminalSize	polestar.py	/^from lib.consle_width import getTerminalSize$/;"	kind:namespace	line:13
+get_Result	polestar.py	/^    def get_Result(self):$/;"	kind:member	line:166
 get_algorithm	install/dnspython-1.12.0/dns/tsig.py	/^def get_algorithm(algorithm):$/;"	kind:function	line:199
 get_algorithm_and_mac	install/dnspython-1.12.0/dns/tsig.py	/^def get_algorithm_and_mac(wire, tsig_rdata, tsig_rdlen):$/;"	kind:function	line:225
 get_deepest_match	install/dnspython-1.12.0/dns/namedict.py	/^    def get_deepest_match(self, name):$/;"	kind:member	line:40
@@ -1674,7 +1675,7 @@ namedict.py	install/dnspython-1.12.0/dns/namedict.py	1;"	kind:file	line:1
 names	install/dnspython-1.12.0/examples/xfr.py	/^names = z.nodes.keys()$/;"	kind:variable	line:11
 new	install/dnspython-1.12.0/dns/hash.py	/^                def new(self, *args, **kwargs):$/;"	kind:member	line:53
 next	install/dnspython-1.12.0/dns/tokenizer.py	/^    def next(self):$/;"	kind:member	line:422
-nmap	subDomainsBrute.py	/^from nmap import nmap$/;"	kind:namespace	line:14
+nmap	polestar.py	/^from nmap import nmap$/;"	kind:namespace	line:14
 node	install/dnspython-1.12.0/dns/dnssec.py	/^import dns.node$/;"	kind:namespace	line:25
 node	install/dnspython-1.12.0/dns/zone.py	/^import dns.node$/;"	kind:namespace	line:25
 node.py	install/dnspython-1.12.0/dns/node.py	1;"	kind:file	line:1
@@ -1697,8 +1698,8 @@ opcode	install/dnspython-1.12.0/tests/test_flags.py	/^import dns.opcode$/;"	kind
 opcode.py	install/dnspython-1.12.0/dns/opcode.py	1;"	kind:file	line:1
 option_from_wire	install/dnspython-1.12.0/dns/edns.py	/^def option_from_wire(otype, wire, current, olen):$/;"	kind:function	line:128
 optparse	install/dnspython-1.12.0/examples/zonediff.py	/^    import optparse$/;"	kind:namespace	line:145
-optparse	subDomainsBrute.py	/^import optparse$/;"	kind:namespace	line:12
-optparse	subDomainsBrute.py	/^import optparse$/;"	kind:namespace	line:6
+optparse	polestar.py	/^import optparse$/;"	kind:namespace	line:12
+optparse	polestar.py	/^import optparse$/;"	kind:namespace	line:6
 os	install/dnspython-1.12.0/dns/entropy.py	/^import os$/;"	kind:namespace	line:16
 os	install/dnspython-1.12.0/examples/reverse.py	/^import os.path$/;"	kind:namespace	line:21
 os	install/dnspython-1.12.0/tests/test_generate.py	/^import os$/;"	kind:namespace	line:21
@@ -1709,13 +1710,14 @@ os	install/dnspython-1.12.0/tests/utest.py	/^import os.path$/;"	kind:namespace	l
 os	lib/consle_width.py	/^            import fcntl, termios, struct, os$/;"	kind:namespace	line:68
 override_system_resolver	install/dnspython-1.12.0/dns/resolver.py	/^def override_system_resolver(resolver=None):$/;"	kind:function	line:1210
 parent	install/dnspython-1.12.0/dns/name.py	/^    def parent(self):$/;"	kind:member	line:533
-parser	subDomainsBrute.py	/^    parser = optparse.OptionParser('usage: %prog [options] target')$/;"	kind:variable	line:150
+parser	polestar.py	/^    parser = optparse.OptionParser('usage: %prog [options] target')$/;"	kind:variable	line:201
 path	install/dnspython-1.12.0/examples/reverse.py	/^import os.path$/;"	kind:namespace	line:21
 path	install/dnspython-1.12.0/tests/utest.py	/^import os.path$/;"	kind:namespace	line:1
 pdb	install/dnspython-1.12.0/dns/grange.py	/^    import pdb$/;"	kind:namespace	line:31
 pdb	install/dnspython-1.12.0/tests/test_generate.py	/^import pdb$/;"	kind:namespace	line:35
 pdb	install/dnspython-1.12.0/tests/test_grange.py	/^import pdb$/;"	kind:namespace	line:28
 platform	lib/consle_width.py	/^   import platform$/;"	kind:namespace	line:10
+polestar.py	polestar.py	1;"	kind:file	line:1
 polling_backend	install/dnspython-1.12.0/tests/test_resolver.py	/^        def polling_backend(self):$/;"	kind:member	line:180
 polling_backend	install/dnspython-1.12.0/tests/test_resolver.py	/^    def polling_backend(self):$/;"	kind:member	line:175
 pool	install/dnspython-1.12.0/dns/entropy.py	/^pool = EntropyPool()$/;"	kind:variable	line:117
@@ -1875,7 +1877,7 @@ resolver	install/dnspython-1.12.0/dns/e164.py	/^import dns.resolver$/;"	kind:nam
 resolver	install/dnspython-1.12.0/examples/mx.py	/^import dns.resolver$/;"	kind:namespace	line:3
 resolver	install/dnspython-1.12.0/examples/xfr.py	/^import dns.resolver$/;"	kind:namespace	line:4
 resolver	install/dnspython-1.12.0/tests/test_resolver.py	/^import dns.resolver$/;"	kind:namespace	line:27
-resolver	subDomainsBrute.py	/^import dns.resolver$/;"	kind:namespace	line:9
+resolver	polestar.py	/^import dns.resolver$/;"	kind:namespace	line:9
 resolver.py	install/dnspython-1.12.0/dns/resolver.py	1;"	kind:file	line:1
 response	install/dnspython-1.12.0/examples/ddns.py	/^response = dns.query.tcp(update, '10.0.0.1', timeout=10)$/;"	kind:variable	line:51
 restore_system_resolver	install/dnspython-1.12.0/dns/resolver.py	/^def restore_system_resolver():$/;"	kind:function	line:1235
@@ -1896,9 +1898,9 @@ rrset	install/dnspython-1.12.0/tests/test_rdtypeanyloc.py	/^import dns.rrset$/;"
 rrset	install/dnspython-1.12.0/tests/test_rrset.py	/^import dns.rrset$/;"	kind:namespace	line:18
 rrset	install/dnspython-1.12.0/tests/test_zone.py	/^import dns.rrset$/;"	kind:namespace	line:25
 rrset.py	install/dnspython-1.12.0/dns/rrset.py	1;"	kind:file	line:1
-run	subDomainsBrute.py	/^    def run(self):$/;"	kind:member	line:120
-run	subDomainsBrute.py	/^    def run(self):$/;"	kind:member	line:146
-scan	subDomainsBrute.py	/^    scan = DoScan(d.ipfile)$/;"	kind:variable	line:169
+run	polestar.py	/^    def run(self):$/;"	kind:member	line:121
+run	polestar.py	/^    def run(self):$/;"	kind:member	line:180
+scan	polestar.py	/^    scan = DoScan(d.all_ip, options.arguments)$/;"	kind:variable	line:222
 section_number	install/dnspython-1.12.0/dns/message.py	/^    def section_number(self, section):$/;"	kind:member	line:288
 select	install/dnspython-1.12.0/dns/query.py	/^import select$/;"	kind:namespace	line:21
 select	install/dnspython-1.12.0/tests/test_resolver.py	/^import select$/;"	kind:namespace	line:17
@@ -1922,6 +1924,7 @@ sha	install/dnspython-1.12.0/dns/hash.py	/^        import md5, sha$/;"	kind:name
 sign	install/dnspython-1.12.0/dns/tsig.py	/^def sign(wire, keyname, secret, time, fudge, original_id, error,$/;"	kind:function	line:71
 sigtime_to_posixtime	install/dnspython-1.12.0/dns/rdtypes/ANY/RRSIG.py	/^def sigtime_to_posixtime(what):$/;"	kind:function	line:29
 skip_whitespace	install/dnspython-1.12.0/dns/tokenizer.py	/^    def skip_whitespace(self):$/;"	kind:member	line:264
+sleep	polestar.py	/^from time import sleep$/;"	kind:namespace	line:15
 soa_answer	install/dnspython-1.12.0/examples/xfr.py	/^soa_answer = dns.resolver.query('dnspython.org', 'SOA')$/;"	kind:variable	line:7
 socket	install/dnspython-1.12.0/dns/inet.py	/^import socket$/;"	kind:namespace	line:18
 socket	install/dnspython-1.12.0/dns/query.py	/^import socket$/;"	kind:namespace	line:22
@@ -1960,7 +1963,6 @@ struct	install/dnspython-1.12.0/dns/renderer.py	/^import struct$/;"	kind:namespa
 struct	install/dnspython-1.12.0/dns/tsig.py	/^import struct$/;"	kind:namespace	line:19
 struct	lib/consle_width.py	/^            import fcntl, termios, struct, os$/;"	kind:namespace	line:68
 struct	lib/consle_width.py	/^        import struct$/;"	kind:namespace	line:40
-subDomainsBrute.py	subDomainsBrute.py	1;"	kind:file	line:1
 subprocess	install/dnspython-1.12.0/examples/zonediff.py	/^    import subprocess$/;"	kind:namespace	line:146
 subprocess	lib/consle_width.py	/^       import subprocess$/;"	kind:namespace	line:53
 subtype	install/dnspython-1.12.0/dns/rdtypes/ANY/AFSDB.py	/^    subtype = property(get_subtype, set_subtype)$/;"	kind:variable	line:43
@@ -1983,7 +1985,7 @@ sys	install/dnspython-1.12.0/tests/test_generate.py	/^import sys$/;"	kind:namesp
 sys	install/dnspython-1.12.0/tests/test_grange.py	/^import sys$/;"	kind:namespace	line:16
 sys	install/dnspython-1.12.0/tests/test_resolver.py	/^import sys$/;"	kind:namespace	line:18
 sys	install/dnspython-1.12.0/tests/utest.py	/^import sys$/;"	kind:namespace	line:2
-sys	subDomainsBrute.py	/^import sys$/;"	kind:namespace	line:8
+sys	polestar.py	/^import sys$/;"	kind:namespace	line:8
 tcp	install/dnspython-1.12.0/dns/query.py	/^def tcp(q, where, timeout=None, port=53, af=None, source=None, source_port=0,$/;"	kind:function	line:272
 tearDown	install/dnspython-1.12.0/tests/test_resolver.py	/^    def tearDown(self):$/;"	kind:member	line:169
 termios	lib/consle_width.py	/^            import fcntl, termios, struct, os$/;"	kind:namespace	line:68
@@ -2386,7 +2388,7 @@ test_type_totext_bounds2	install/dnspython-1.12.0/tests/test_rdtypeandclass.py	/
 test_update.py	install/dnspython-1.12.0/tests/test_update.py	1;"	kind:file	line:1
 test_zero_size_APL	install/dnspython-1.12.0/tests/test_bugs.py	/^    def test_zero_size_APL(self):$/;"	kind:member	line:48
 test_zone.py	install/dnspython-1.12.0/tests/test_zone.py	1;"	kind:file	line:1
-threading	subDomainsBrute.py	/^import threading$/;"	kind:namespace	line:10
+threading	polestar.py	/^import threading$/;"	kind:namespace	line:10
 time	install/dnspython-1.12.0/dns/dnssec.py	/^import time$/;"	kind:namespace	line:20
 time	install/dnspython-1.12.0/dns/entropy.py	/^import time$/;"	kind:namespace	line:17
 time	install/dnspython-1.12.0/dns/message.py	/^import time$/;"	kind:namespace	line:22
@@ -2395,7 +2397,7 @@ time	install/dnspython-1.12.0/dns/rdtypes/ANY/RRSIG.py	/^import time$/;"	kind:na
 time	install/dnspython-1.12.0/dns/renderer.py	/^import time$/;"	kind:namespace	line:21
 time	install/dnspython-1.12.0/dns/resolver.py	/^import time$/;"	kind:namespace	line:23
 time	install/dnspython-1.12.0/tests/test_resolver.py	/^import time$/;"	kind:namespace	line:19
-time	subDomainsBrute.py	/^import time$/;"	kind:namespace	line:11
+time	polestar.py	/^import time$/;"	kind:namespace	line:11
 to_address	install/dnspython-1.12.0/dns/reversename.py	/^def to_address(name):$/;"	kind:function	line:53
 to_digestable	install/dnspython-1.12.0/dns/name.py	/^    def to_digestable(self, origin=None):$/;"	kind:member	line:363
 to_digestable	install/dnspython-1.12.0/dns/rdata.py	/^    def to_digestable(self, origin = None):$/;"	kind:member	line:177
