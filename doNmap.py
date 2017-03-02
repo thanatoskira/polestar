@@ -31,6 +31,7 @@ class doNmap:
             host = self.all_ip.pop()    #存在ip没有进行扫描，则获取ip进行扫描
             self.lock.release() #获取ip后释放锁
             if len(self.r.findall(host)):
+                self.lock.release()
                 continue
             self.result = self.nm.scan(hosts = host, arguments = self.arguments)
             self._get_Result()  #打印结果
