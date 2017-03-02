@@ -29,10 +29,9 @@ class doNmap:
         self.lock.acquire() #请求锁来对all_ip进行操作
         while len(self.all_ip) > 0:
             host = self.all_ip.pop()    #存在ip没有进行扫描，则获取ip进行扫描
-            self.lock.release() #获取ip后释放锁
-            if len(self.r.findall(host)):
-                self.lock.acquire()
+            if self.r.findall(host):
                 continue
+            self.lock.release() #获取ip后释放锁
             self.result = self.nm.scan(hosts = host, arguments = self.arguments)
             self._get_Result()  #打印结果
             self.lock.acquire() #结束扫描后再次进行判断all_ip中是否还有ip未扫描
