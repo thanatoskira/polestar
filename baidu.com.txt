@@ -1,9 +1,0 @@
-info.baidu.com                	61.135.185.62
-office.baidu.com              	10.99.72.22
-autodiscover.baidu.com        	61.135.163.61
-bip.baidu.com                 	10.36.48.24
-ns1.baidu.com                 	202.108.22.220
-www.baidu.com                 	61.135.169.121, 61.135.169.125
-pop.baidu.com                 	10.99.145.36
-ns2.baidu.com                 	61.135.165.235
-v.baidu.com                   	123.125.114.32
