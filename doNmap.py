@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+import re
 import sys
 import threading
 from time import sleep
@@ -16,6 +17,7 @@ class doNmap:
         self.all_ip = all_ip
         self.lock = threading.Lock()
         self.thread = []
+        self.r = re.compile("^(192\.168|169|172\.[0-3][0-9]|127|10).*") #正则匹配保留地址
         self.console_width = getTerminalSize()[0]
         self.console_width -= 2    # Cal width when starts up
         self.output = open('nmap_' + output + '.txt', 'w')
@@ -28,6 +30,8 @@ class doNmap:
         while len(self.all_ip) > 0:
             host = self.all_ip.pop()    #存在ip没有进行扫描，则获取ip进行扫描
             self.lock.release() #获取ip后释放锁
+            if len(self.r.findall(host)):
+                continue
             self.result = self.nm.scan(hosts = host, arguments = self.arguments)
             self._get_Result()  #打印结果
             self.lock.acquire() #结束扫描后再次进行判断all_ip中是否还有ip未扫描
