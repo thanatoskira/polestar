@@ -33,7 +33,7 @@ class DNSBrute:
 
     def _load_dns_servers(self):
         dns_servers = []
-        with open('dns_servers.txt') as f:
+        with open('./wordlist/dns_servers.txt') as f:
             for line in f:
                 server = line.strip()
                 if server.count('.') == 3 and server not in dns_servers:
@@ -51,7 +51,7 @@ class DNSBrute:
 
     def _load_next_sub(self):
         next_subs = []
-        with open('next_sub.txt') as f:
+        with open('./wordlist/next_sub.txt') as f:
             for line in f:
                 sub = line.strip()
                 if sub and sub not in next_subs:

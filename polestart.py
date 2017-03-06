@@ -3,15 +3,15 @@
 
 import sys
 import optparse
-from subDomainsBrute import DNSBrute
-from doNmap import doNmap
+from subDomainsBrute.subDomainsBrute import DNSBrute
+from doNmap.doNmap import doNmap
 
 if __name__ == '__main__':
     parser = optparse.OptionParser('usage: %prog [options] target')
     parser.add_option('-t', '--threads', dest='threads_num',
               default=10, type='int',
               help='Number of threads. default = 10')
-    parser.add_option('-f', '--file', dest='names_file', default='subnames.txt',
+    parser.add_option('-f', '--file', dest='names_file', default='./wordlist/subnames.txt',
               type='string', help='Dict file used to brute sub names')
     parser.add_option('-o', '--output', dest='output', default=None,
               type='string', help='Output file name. default is {target}.txt')
@@ -24,8 +24,6 @@ if __name__ == '__main__':
     if len(args) < 1:
         parser.print_help()
         sys.exit(0)
-    
-    print(args[0], options.names_file, options.threads_num, options.output)
 
     dnsBrute = DNSBrute(target=args[0], names_file=options.names_file,
                  threads_num=options.threads_num,
