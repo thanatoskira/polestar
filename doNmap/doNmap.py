@@ -81,13 +81,18 @@ class doNmap:
 
     def run(self):
         #print('Total Thread Count: ', self.thread_count)
-        for i in range(self.thread_count):
-            #self.thread[i].setDaemon(True)
-            self.thread[i].start()
-            sleep(0.2)    #等待线程启动正常
-            if not self.thread[i].isAlive(): #线程启动失败则退出
-                print('[-]\033[1;33;31mThread number ' + str(i) + ' Start Fail!\nExit the program\033[0m')
-                exit(-1)
+        try:
+            for i in range(self.thread_count):
+                #self.thread[i].setDaemon(True)
+                self.thread[i].start()
+                sleep(0.2)    #等待线程启动正常
+                """
+                if not self.thread[i].isAlive(): #线程启动失败则退出
+                    print('[-]\033[1;33;31mThread number ' + str(i) + ' Start Fail!\nExit the program\033[0m')
+                    exit(-1)
+                """
+        except Exception as e:
+            pass
         
         detection = threading.Thread(target=self._detection_Thread_Status)
         detection.setDaemon(True)
