@@ -4,8 +4,10 @@
 import re
 import sys
 import threading
+import requests
 from time import sleep
 from nmap import nmap
+from prettytable import PrettyTable
 from lib.consle_width import getTerminalSize
 
 class doNmap:
@@ -36,24 +38,49 @@ class doNmap:
             self._get_Result()  #打印结果
             self.lock.acquire() #结束扫描后再次进行判断all_ip中是否还有ip未扫描
         self.lock.release()
+
+    def _get_Title(self, host, port):
+        r = re.compile("'(.*?)'")
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
+        proc = 'https://' if port == '443' or port == '8443' else 'http://'
+        url = proc + host + ":" + str(port)
+        try:
+            response = requests.get(url, headers=headers, timeout=3)
+            title = re.search('<title>(.*?)</title>',response.content.decode('utf-8')).group(1)
+            return (response.reason, title)
+        except Exception as e:
+            if str(e).find("has no attribute 'group'") != -1:
+                return (response.status_code, "None")
+            elif str(e).find("Read timed out") != -1:
+                return ('TimeOut', 'None')
+            else:
+                return (r.findall(str(e))[0], 'None')
+
+
                 
     def _get_Result(self):
+        #使用prettytable格式化输出
+        ptable = PrettyTable(['Port', 'Status', 'Name', 'Reason', 'Title'])
+        ptable.align = 'l'  #靠左输出
+        #ptable.align['Port'] = '1'
+        ptable.padding_width = 1    
+
         self.result = self.result['scan']
         for target in self.result:
             self.lock.acquire()
             print('\033[1;32;40mHost: \033[0m\033[1;34;40m' + target + '\033[0m\033[1;32;40m    Name: \033[0m\033[1;34;40m'),
             self.output.writelines('Host: ' + target + '    Name: ')
+            host = target   #记录host
             target = self.result[target]
-            print(str('None' if not target['hostnames'][0]['name'] else target['hostnames'][0]['name']) + '\033[0m\033[1;32;40m')
-            self.output.writelines(str('None' if not target['hostnames'][0]['name'] else target['hostnames'][0]['name']) + '\n')
-            print("%-8s\t|%-8s\t|%-8s\t|%-8s\t|%-8s" % ('Port', 'Status', 'Name', 'Vsersion', 'Extrainfo'))
-            self.output.writelines("%-8s\t|%-8s\t|%-8s\t|%-8s\t|%-8s" % ('Port', 'Status', 'Name', 'Vsersion', 'Extrainfo') + '\n')
+            hostnames = str('None' if not target['hostnames'][0]['name'] else target['hostnames'][0]['name'])
+            print(hostnames + '\033[0m\033[1;32;40m')
+            self.output.writelines(hostnames + '\n')
             tcp = target['tcp']
             for port in tcp:
-                print("%-8s\t|%-8s\t|%-8s\t|%-8s\t|%-8s" % (str(port), tcp[port]['state'], tcp[port]['name'], tcp[port]['version'], tcp[port]['extrainfo']))
-                self.output.writelines("%-8s\t|%-8s\t|%-8s\t|%-8s\t|%-8s\n" % (str(port), tcp[port]['state'], tcp[port]['name'], tcp[port]['version'], tcp[port]['extrainfo']))
-            print('-' * (self.console_width))
-            self.output.writelines('-' * (self.console_width)+'\n')
+                reason, title = self._get_Title(host, port)
+                ptable.add_row([str(port), tcp[port]['state'], tcp[port]['name'], reason, title])
+            print(ptable)
+            self.output.writelines(str(ptable)+'\n\n')
             print('\033[0m')
             self.lock.release()
 
@@ -72,6 +99,7 @@ class doNmap:
                     sys.stdout.flush()
                     self.lock.release()
                     sleep(0.2)
+
                 else:
                     self.lock.acquire() #获取ip后释放锁
                     All_Is_Over -= 1    #每结束一个线程, All_Is_Over数量减1
