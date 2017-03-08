@@ -53,8 +53,10 @@ class doNmap:
                 return (response.status_code, "None")
             elif str(e).find("Read timed out") != -1:
                 return ('TimeOut', 'None')
-            else:
+            elif r.findall(str(e)) != []:
                 return (r.findall(str(e))[0], 'None')
+            else:
+                return (str(e), 'None')
 
 
                 
