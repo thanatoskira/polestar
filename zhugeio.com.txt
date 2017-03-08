@@ -1,4 +1,0 @@
-www.zhugeio.com               	103.17.40.178
-m.zhugeio.com                 	182.237.3.96
-web.zhugeio.com               	54.223.194.253
-api.zhugeio.com               	103.17.40.162
