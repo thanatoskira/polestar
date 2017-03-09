@@ -8,9 +8,9 @@ from doNmap.doNmap import doNmap
 
 if __name__ == '__main__':
     parser = optparse.OptionParser('usage: %prog [options] target')
-    parser.add_option('-t', '--threads', dest='threads_num',
-              default=10, type='int',
-              help='Number of threads. default = 10')
+    #parser.add_option('-t', '--threads', dest='threads_num',
+    #          default=10, type='int',
+    #          help='Number of threads. default = 10')
     parser.add_option('-f', '--file', dest='names_file', default='./wordlist/subnames.txt',
               type='string', help='Dict file used to brute sub names')
     parser.add_option('-o', '--output', dest='output', default=None,
@@ -25,11 +25,9 @@ if __name__ == '__main__':
         parser.print_help()
         sys.exit(0)
 
-    dnsBrute = DNSBrute(target=args[0], names_file=options.names_file,
-                 threads_num=options.threads_num,
-                 output=options.output)
+    dnsBrute = DNSBrute(target=args[0], names_file=options.names_file, output=options.output) #threads_num=options.threads_num,
     
-    dnsBrute.run()
-    scan = doNmap(args[0], dnsBrute.all_ip, options.arguments, options.nmap_thread)
+    #dnsBrute.run()
+    #scan = doNmap(args[0], dnsBrute.all_ip, options.arguments, options.nmap_thread)
 
-    scan.run()
+    #scan.run()
