@@ -35,7 +35,11 @@ class doNmap:
                 continue
             self.lock.release() #获取ip后释放锁
             self.result = self.nm.scan(hosts = host, arguments = self.arguments)
-            self._get_Result()  #打印结果
+            try: ####待修复。。。
+                self._get_Result()  #打印结果
+            except Exception as e:
+                print(e)
+                exit(-1)
             self.lock.acquire() #结束扫描后再次进行判断all_ip中是否还有ip未扫描
         self.lock.release()
 
@@ -73,6 +77,8 @@ class doNmap:
             print('\033[1;32;40mHost: \033[0m\033[1;34;40m' + target + '\033[0m\033[1;32;40m    Name: \033[0m\033[1;34;40m'),
             self.output.writelines('Host: ' + target + '    Name: ')
             host = target   #记录host
+            #print(self.result)
+            #print(self.result[target])
             target = self.result[target]
             hostnames = str('None' if not target['hostnames'][0]['name'] else target['hostnames'][0]['name'])
             print(hostnames + '\033[0m\033[1;32;40m')
