@@ -25,7 +25,9 @@ class DNSBrute:
     def __init__(self, target, threads_num, names_file, output): #缺少threads_num
         self.target = target
         self.names_file = names_file
+        #参数提供的线程个数，默认10
         self.threads_num = threads_num
+        #根据域名个数来划分进程池的个数
         self.segment_num = 600
         #用于记录总的爆破域名个数
         self.total = 0
@@ -92,10 +94,13 @@ class DNSBrute:
         #根据给定的线程数创建线程
         print('Start Thread ' + str(pool_name))
         threads = [threading.Thread(target=self._query_domain, args=(queue, pool_name)) for _ in range(self.threads_num)]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
+        try:
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+        except:
+            pass
         #self._handle_data(pool_name)
 
     #不变
