@@ -28,7 +28,7 @@ class DNSBrute:
         #参数提供的线程个数，默认10
         self.threads_num = threads_num
         #根据域名个数来划分进程池的个数
-        self.segment_num = 600
+        self.segment_num = 5000
         #用于记录总的爆破域名个数
         self.total = 0
         self.found_count = 0
@@ -92,14 +92,15 @@ class DNSBrute:
     def _thread_pool(self, queue, pool_name):
         #print('_thread_pool')
         #根据给定的线程数创建线程
-        print('Start Thread ' + str(pool_name))
+        print('Start Process ' + str(pool_name))
         threads = [threading.Thread(target=self._query_domain, args=(queue, pool_name)) for _ in range(self.threads_num)]
         try:
             for thread in threads:
                 thread.start()
             for thread in threads:
                 thread.join()
-        except:
+        except Exception as e:
+            print(e)
             pass
         #self._handle_data(pool_name)
 
@@ -111,6 +112,8 @@ class DNSBrute:
         #print(len(self.queues))
         #for queue in range(len(self.queues)):
             #pool_threads.append(threading.Thread(target=self._thread_pool, args=(self.queues[thread_name],), name=str(thread_name)))
+        time_start = time.time()
+        print("Start At " + time_start)
         coroutine_pool = gevent.pool.Pool(len(self.queues))
         coroutine_pools = []
         for pool_name in range(len(self.queues)):
@@ -143,6 +146,8 @@ class DNSBrute:
         """
         #self._handle_data(pool_name)
         del coroutine_pools
+        time_end = time.time() - time_start
+        print('End At ' + time_end)
         
     """
     #不变
@@ -161,10 +166,10 @@ class DNSBrute:
             #print(domain)
             list_ip=list()
             list_cname=list()
-            #msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
-            #    self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
-            #sys.stdout.write('\r' + ' ' * (self.console_width - len(msg) + 14) + msg)
-            #sys.stdout.flush()
+            msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
+                self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
+            sys.stdout.write('\r' + ' ' * (self.console_width - len(msg) + 14) + msg)
+            sys.stdout.flush()
             try:
                 record = self.resolvers[pool_name].query(domain)
                 for A_CNAME in record.response.answer:
