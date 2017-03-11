@@ -121,6 +121,7 @@ class DNSBrute:
         self.ip_flags = [{} for _ in range(len(coroutine_pools))]
         for coroutine in coroutine_pools:
             coroutine.join()
+        print('%-30s\t\t|%-5s\t\t|%-15s' % ("Domain", "IS_CDN", 'DICT_IP'))
         """
         for pool_name in range(len(self.queues)):
             #print(self.dict_ips[pool_name])
