@@ -154,10 +154,10 @@ class DNSBrute:
             #print(domain)
             list_ip=list()
             list_cname=list()
-            msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
-                self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
-            sys.stdout.write('\r' + ' ' * (self.console_width - len(msg) + 14) + msg)
-            sys.stdout.flush()
+            #msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
+            #    self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
+            #sys.stdout.write('\r' + ' ' * (self.console_width - len(msg) + 14) + msg)
+            #sys.stdout.flush()
             try:
                 record = self.resolvers[pool_name].query(domain)
                 for A_CNAME in record.response.answer:
@@ -203,7 +203,7 @@ class DNSBrute:
             else:
                 iscdn = False
         self.dict_domain[domain] = (str(iscdn), sorted(list_ip))
-        print('%-30s\t\t|%-5s\t\t|%15s' % (domain.ljust(30), str(iscdn), ', '.join(sorted(list_ip))))
+        print('%-30s\t\t|%-5s\t\t|%-15s' % (domain.ljust(30), str(iscdn), ', '.join(sorted(list_ip))))
         #domain计数器
         self.lock.acquire()
         self.found_count = self.found_count + 1
