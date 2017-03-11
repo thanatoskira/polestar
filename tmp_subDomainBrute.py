@@ -112,9 +112,9 @@ class DNSBrute:
                     self.lock.acquire()
                     self.found_count += 1
                     ips = ', '.join([answer.address for answer in answers])
-                    msg = cur_sub_domain.ljust(30) + ips
-                    sys.stdout.write('\033[1;32;40m\r[+]' + msg + ' ' * (self.console_width- len(msg) - 3) + '\033[0m\n\r')
-                    sys.stdout.flush()
+                    #msg = cur_sub_domain.ljust(30) + ips
+                    #sys.stdout.write('\033[1;32;40m\r[+]' + msg + ' ' * (self.console_width- len(msg) - 3) + '\033[0m\n\r')
+                    #sys.stdout.flush()
                     self.outfile.write(cur_sub_domain.ljust(30) + '\t' + ips + '\n')
                     self.lock.release()
                     for i in self.next_subs:
