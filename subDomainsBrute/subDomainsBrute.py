@@ -13,7 +13,7 @@ import threading
 import gevent.pool
 import dns.resolver
 from prettytable import PrettyTable
-from IPy import IP
+#from IPy import IP
 from gevent import monkey
 from lib.consle_width import getTerminalSize
 from publicsuffix import PublicSuffixList
@@ -26,18 +26,26 @@ class DNSBrute:
         self.target = target
         self.names_file = names_file
         self.threads_num = threads_num
-        self.coroutine_num = 500
-        self.segment_num = 7000
+        self.segment_num = 600
+        #用于记录总的爆破域名个数
+        self.total = 0
         self.found_count = 0
+        #显示运行时间
+        self.start_time = time.time()
+        #用于输出
+        self.console_width = getTerminalSize()[0]
+        self.console_width -= 2    # Cal width when starts up
         self._load_dns_servers()
         self._load_sub_names()
         self._load_cdn()
         self.lock = threading.Lock()
+        print('_get_suffix')
         self._get_suffix()
+        print('_end_suffix')
 
     #不变
     def _load_dns_servers(self):
-        #print('_load_dns_servers')
+        print('_load_dns_servers')
         dns_servers = []
         with open('./wordlist/dns_servers.txt') as f:
             for line in f:
@@ -49,17 +57,19 @@ class DNSBrute:
 
     #不变
     def _load_cdn(self):
-        #print('_load_cdn')
-        self.set_cdn = set()
+        print('_load_cdn')
+        set_cdn = set()
         with open('./wordlist/cdn_servers.txt','r') as file_cdn:
             for line in file_cdn:
                 line = line.strip()
-                self.set_cdn.add(line)
+                set_cdn.add(line)
+        self.set_cdn = set_cdn
+        print('_end_load_cdn')
 
 
     #不变
     def _load_sub_names(self):
-        #print('_load_sub_names')
+        print('_load_sub_names')
         self.queues = []
         queue = Queue.Queue()
         with open(self.names_file) as f:
@@ -69,25 +79,28 @@ class DNSBrute:
                     #print('put ' + domain)
                     queue.put(domain)
                 else:                               #当queue数量满了，则换一个Queue
+                    self.total += self.segment_num
                     self.queues.append(queue)
                     queue = Queue.Queue()
+        self.total += queue.qsize()
+        self.rest = self.total  #rest记录剩余的个数    
         self.queues.append(queue)
 
     #不变
     def _thread_pool(self, queue, pool_name):
         #print('_thread_pool')
         #根据给定的线程数创建线程
-        print('Start Thread ' + pool_name)
+        print('Start Thread ' + str(pool_name))
         threads = [threading.Thread(target=self._query_domain, args=(queue, pool_name)) for _ in range(self.threads_num)]
         for thread in threads:
             thread.start()
         for thread in threads:
             thread.join()
-        self._handle_data(pool_name)
+        #self._handle_data(pool_name)
 
     #不变
     def run(self):
-        #print('run')
+        print('run')
         #进程池
         #pool_threads = []
         #print(len(self.queues))
@@ -98,17 +111,23 @@ class DNSBrute:
         for pool_name in range(len(self.queues)):
             coroutine_pools.append(coroutine_pool.apply_async(self._thread_pool, args=(self.queues[pool_name], pool_name)))
         self.resolvers = [dns.resolver.Resolver() for _ in range(len(coroutine_pools))]
-        self.dict_ips = [{} for _ in range(len(coroutine_pools))]
-        self.dict_ip = {}
-        self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
+        #设置dns解析服务器
+        for resolver in self.resolvers:
+            resolver.nameservers = self.dns_servers
+            #print(resolver.nameservers)
+        #self.dict_ips = [{} for _ in range(len(coroutine_pools))]
+        #self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
+        self.dict_domain = {}
         self.ip_flags = [{} for _ in range(len(coroutine_pools))]
         for coroutine in coroutine_pools:
             coroutine.join()
-        #for pool_name in range(len(self.queues)):
+        """
+        for pool_name in range(len(self.queues)):
             #print(self.dict_ips[pool_name])
             #print(self.dict_cnames[pool_name])
-            #for ip, times in self.ip_flags[pool_name].items():
-                #print(str(ip) + '\t\t' + str(times))
+            for ip, times in self.ip_flags[pool_name].items():
+                print(str(ip) + '\t\t' + str(times))
+        """
         """
         for thread in pool_threads:
             thread.start()
@@ -118,38 +137,44 @@ class DNSBrute:
         #self._handle_data(pool_name)
         del coroutine_pools
         
-
+    """
     #不变
     def _add_ulimit(self):
         if(platform.system()!="Windows"):
             os.system("ulimit -n 65535")
+    """
 
     #不变
     def _query_domain(self, queue, pool_name):
         while queue.qsize() > 0:
             domain = queue.get(timeout=1.0)
+            self.lock.acquire()
+            self.rest -= 1
+            self.lock.release()
             #print(domain)
             list_ip=list()
             list_cname=list()
+            msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
+                self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
+            sys.stdout.write('\r' + ' ' * (self.console_width - len(msg) + 14) + msg)
+            sys.stdout.flush()
             try:
                 record = self.resolvers[pool_name].query(domain)
                 for A_CNAME in record.response.answer:
                     for item in A_CNAME.items:
                         if item.rdtype == self.get_type_id('A'):
                             list_ip.append(str(item))
-                            self.dict_ips[pool_name][domain]=list_ip
+                            #self.dict_ips[pool_name][domain]=list_ip
                         elif(item.rdtype == self.get_type_id('CNAME')):
                             list_cname.append(str(item))
                             #print(str(item))
-                            self.dict_cnames[pool_name][domain] = list_cname
+                            #self.dict_cnames[pool_name][domain] = list_cname
                         elif(item.rdtype == self.get_type_id('TXT')):
                             pass
                         elif item.rdtype == self.get_type_id('MX'):
                             pass
                         elif item.rdtype == self.get_type_id('NS'):
                             pass
-                del list_ip
-                del list_cname
             except dns.resolver.NoAnswer:
                 pass
             except dns.resolver.NXDOMAIN:
@@ -158,9 +183,35 @@ class DNSBrute:
                 pass
             except Exception as e:
                 pass
+            finally:
+                #每获取一个域名及其IP，都将对该域名进行判断是否为cdn
+                #print('_finally_method_')
+                if list_ip:
+                    self._handle_data(domain, list_ip, list_cname)
+                del list_ip
+                del list_cname
+
+    
+    #不变
+    def _handle_data(self, domain, list_ip, list_cname):
+
+        #判断域名是否为cdn
+        iscdn = False
+        for cname in list_cname:
+            if(self._check_cdn(cname)):
+                iscdn = True
+            else:
+                iscdn = False
+        self.dict_domain[domain] = (str(iscdn), sorted(list_ip))
+        print('%-30s\t\t|%-5s\t\t|%15s' % (domain.ljust(30), str(iscdn), ', '.join(sorted(list_ip))))
+        #domain计数器
+        self.lock.acquire()
+        self.found_count = self.found_count + 1
+        self.lock.release()
     
     #不变
     def _get_suffix(self):
+        #print('_get_suffix')
         suffix_list = fetch()
         self.psl = PublicSuffixList(suffix_list)
     
@@ -175,48 +226,8 @@ class DNSBrute:
             return True
         else:
             return False
-    #不变
-    def _handle_data(self, pool_name):
-        """
-        ptable = PrettyTable(['Port', 'Status', 'Name', 'Reason', 'Title'])
-        ptable.align = 'l'  #靠左输出
-        #ptable.align['Port'] = '1'
-        ptable.padding_width = 1  
-        """
-        for k, v in self.dict_cnames[pool_name].items():
-            for c in v:
-                if(self._check_cdn(c)):
-                    self.dict_cnames[pool_name][k] = "Yes"
-                else:
-                    self.dict_cnames[pool_name][k] = "No"
-        invert_dict_ip={str(sorted(value)):key for key,value in self.dict_ips[pool_name].items()}
-        invert_dict_ip={value:key for key,value in invert_dict_ip.items()}
-        #这里多个线程修改同一个参数，所以加锁
-        #print(invert_dict_ip)
-        self.lock.acquire()
-        self.found_count = self.found_count + invert_dict_ip.__len__()
-        self.lock.release()
-        for keys,values in self.dict_ips[pool_name].items():
-            #print("%-30s  %-16s" % (keys,  ', '.join(values)))
-            if(invert_dict_ip.__contains__(keys)):
-                for value in values:
-                    if(IP(value).iptype() =='PRIVATE'):
-                        self.dict_ips[pool_name][keys] = "private address"
-                    else:
-                        try:
-                            key_yes=self.dict_cnames[pool_name][keys]
-                        except KeyError:
-                            key_yes="No"
-                        if(key_yes=="No"):  #不为私有IP
-                            CIP = (IP(value).make_net("255.255.255.0"))
-                            self.lock.acquire()
-                            if CIP in self.ip_flags[pool_name]:
-                                self.ip_flags[pool_name][CIP] = self.ip_flags[pool_name][CIP]+1
-                            else:
-                                self.ip_flags[pool_name][CIP] = 1
-                            self.lock.release()
 
-        self.dict_ips[pool_name]=invert_dict_ip
+    
     
 
 
