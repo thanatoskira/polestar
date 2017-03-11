@@ -113,7 +113,8 @@ class DNSBrute:
         #for queue in range(len(self.queues)):
             #pool_threads.append(threading.Thread(target=self._thread_pool, args=(self.queues[thread_name],), name=str(thread_name)))
         time_start = time.time()
-        print("Start At " + time_start)
+        print("Start At "),
+        print(time_start)
         coroutine_pool = gevent.pool.Pool(len(self.queues))
         coroutine_pools = []
         for pool_name in range(len(self.queues)):
@@ -147,7 +148,8 @@ class DNSBrute:
         #self._handle_data(pool_name)
         del coroutine_pools
         time_end = time.time() - time_start
-        print('End At ' + time_end)
+        print('End At '),
+        print(time_end)
         
     """
     #不变
