@@ -36,7 +36,7 @@ class DNSBrute:
         self.start_time = time.time()
         #用于输出
         self.console_width = getTerminalSize()[0]
-        self.console_width -= 2    # Cal width when starts up
+        #self.console_width -= 2    # Cal width when starts up
         self._load_dns_servers()
         self._load_sub_names()
         self._load_cdn()
@@ -129,7 +129,7 @@ class DNSBrute:
         #self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
         self.dict_domain = {}
         self.ip_flags = [{} for _ in range(len(coroutine_pools))]
-        print('%-30s\t\t|%-5s\t\t|%-15s' % ("Domain", "IS_CDN", 'DICT_IP'))
+        print('%-30s\t|%-5s\t|%-15s' % ("Domain", "IS_CDN", 'DICT_IP'))
         for coroutine in coroutine_pools:
             coroutine.join()
         """
