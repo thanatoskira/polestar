@@ -119,14 +119,15 @@ class DNSBrute:
         #设置dns解析服务器
         for resolver in self.resolvers:
             resolver.nameservers = self.dns_servers
+            resolver.lifetime = resolver.timeout = 1.0
             #print(resolver.nameservers)
         #self.dict_ips = [{} for _ in range(len(coroutine_pools))]
         #self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
         self.dict_domain = {}
         self.ip_flags = [{} for _ in range(len(coroutine_pools))]
+        print('%-30s\t\t|%-5s\t\t|%-15s' % ("Domain", "IS_CDN", 'DICT_IP'))
         for coroutine in coroutine_pools:
             coroutine.join()
-        print('%-30s\t\t|%-5s\t\t|%-15s' % ("Domain", "IS_CDN", 'DICT_IP'))
         """
         for pool_name in range(len(self.queues)):
             #print(self.dict_ips[pool_name])
