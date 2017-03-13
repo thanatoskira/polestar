@@ -13,7 +13,9 @@ import platform
 import threading
 import gevent.pool
 import dns.resolver
-from lib.console import 
+import signal
+#from time import sleep
+from lib.console import Console
 from prettytable import PrettyTable
 #from IPy import IP
 from gevent import monkey
@@ -22,7 +24,6 @@ from publicsuffix import PublicSuffixList
 from publicsuffix import fetch
 monkey.patch_all()
 
-
 class DNSBrute:
     def __init__(self, target, threads_num, names_file, output): #缺少threads_num
         self.target = target
@@ -30,7 +31,7 @@ class DNSBrute:
         #参数提供的线程个数，默认10
         self.threads_num = threads_num
         #根据域名个数来划分进程池的个数
-        self.segment_num = 2500
+        self.segment_num = 7000
         #用于记录总的爆破域名个数
         self.total = 0
         self.found_count = 0
@@ -39,6 +40,7 @@ class DNSBrute:
         #用于输出
         self.console_width = getTerminalSize()[0]
         self.console = Console()
+        self.console._set_win()
         #self.console_width -= 2    # Cal width when starts up
         self.ptable = PrettyTable(['Domain', 'IS_CDN', 'DICT_IP'])
         self.ptable.align = 'l'  #靠左输出
@@ -48,10 +50,18 @@ class DNSBrute:
         self._load_sub_names()
         self._load_cdn()
         self.lock = threading.Lock()
+
+        #signal.signal(signal.SIGTERM, sys.exit(-1))
+        #signal.signal(signal.SIGINT, sys.exit(-1))
         time_start = time.time()
         self._get_suffix()
-        print('\033[1;33;40m[!]Use Seconds: ' + str(time.time() - time_start) + '\033[0m')
+        self.console._display_info('[!]Use Seconds: ' + str(time.time() - time_start) + '\n', 0, 1, 3)
         #self._add_ulimit()
+
+    def __del__(self):
+        self.console._display_info('\nPress Any Key To Continue...', 0, 8+self.found_count, 3)
+        self.console._get_ch_and_continue()
+        self.console._unset_win()
 
     #不变
     def _load_dns_servers(self):
@@ -122,40 +132,47 @@ class DNSBrute:
             #pool_threads.append(threading.Thread(target=self._thread_pool, args=(self.queues[thread_name],), name=str(thread_name)))
         #print("Start At "),
         #print(time_start)
-        coroutine_pool = gevent.pool.Pool(len(self.queues))
-        coroutine_pools = []
-        for pool_name in range(len(self.queues)):
-            coroutine_pools.append(coroutine_pool.apply_async(self._thread_pool, args=(self.queues[pool_name], pool_name)))
-        self.resolvers = [dns.resolver.Resolver() for _ in range(len(coroutine_pools))]
-        #设置dns解析服务器
-        for resolver in self.resolvers:
-            resolver.nameservers = self.dns_servers
-            resolver.timeout = 4
-            #print(resolver.nameservers)
-        #self.dict_ips = [{} for _ in range(len(coroutine_pools))]
-        #self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
-        self.dict_domain = {}
-        self.ip_flags = [{} for _ in range(len(coroutine_pools))]
-        #print('\033[1;34;40m%-30s\t|%-5s\t|%-15s\033[0m' % ("Domain", "IS_CDN", 'DICT_IP'))
-        for coroutine in coroutine_pools:
-            coroutine.join()
-        """
-        for pool_name in range(len(self.queues)):
-            #print(self.dict_ips[pool_name])
-            #print(self.dict_cnames[pool_name])
-            for ip, times in self.ip_flags[pool_name].items():
-                print(str(ip) + '\t\t' + str(times))
-        """
-        """
-        for thread in pool_threads:
-            thread.start()
-        for thread in pool_threads:
-            thread.join()
-        """
-        #self._handle_data(pool_name)
-        del coroutine_pools
-        #print('End At '),
-        #print(time_end)
+        try:
+            coroutine_pool = gevent.pool.Pool(len(self.queues))
+            coroutine_pools = []
+            for pool_name in range(len(self.queues)):
+                coroutine_pools.append(coroutine_pool.apply_async(self._thread_pool, args=(self.queues[pool_name], pool_name)))
+            self.resolvers = [dns.resolver.Resolver() for _ in range(len(coroutine_pools))]
+            #设置dns解析服务器
+            for resolver in self.resolvers:
+                resolver.nameservers = self.dns_servers
+                resolver.timeout = 4
+                #print(resolver.nameservers)
+            #self.dict_ips = [{} for _ in range(len(coroutine_pools))]
+            #self.dict_cnames = [{} for _ in range(len(coroutine_pools))]
+            self.dict_domain = {}
+            #self.ip_flags = [{} for _ in range(len(coroutine_pools))]
+            #print('\033[1;34;40m%-30s\t|%-5s\t|%-15s\033[0m' % ("Domain", "IS_CDN", 'DICT_IP'))
+
+            #self.console._set_win()
+            for coroutine in coroutine_pools:
+                coroutine.join()
+            #self.console._get_ch_and_continue()
+            #self.console._unset_win()
+            """
+            for pool_name in range(len(self.queues)):
+                #print(self.dict_ips[pool_name])
+                #print(self.dict_cnames[pool_name])
+                for ip, times in self.ip_flags[pool_name].items():
+                    print(str(ip) + '\t\t' + str(times))
+            """
+            """
+            for thread in pool_threads:
+                thread.start()
+            for thread in pool_threads:
+                thread.join()
+            """
+            #self._handle_data(pool_name)
+            del coroutine_pools
+            #print('End At '),
+            #print(time_end)
+        except Exception as e:
+            self.__del__()
         
     """
     #不变
@@ -174,10 +191,13 @@ class DNSBrute:
             #print(domain)
             list_ip=list()
             list_cname=list()
-            msg = '\033[1;34;40m%s found | %s remaining | %s scanned in %.2f seconds\033[0m' % (
+            msg = '%s found | %s remaining | %s scanned in %.2f seconds ' % (
                 self.found_count, self.rest, self.total-self.rest, time.time() - self.start_time)
-            sys.stdout.write('\r' + ' ' * (self.console_width - len(msg)+14) + msg)
-            sys.stdout.flush()
+            self.console._display_info(" " * (self.console_width-1)+'\n', 0, 6+self.found_count)
+            self.console._display_info(msg+'\n', 0, 7+self.found_count, 3)
+            #sys.stdout.write('\r' + ' ' * (self.console_width - len(msg)+14) + msg)
+            #sys.stdout.flush()
+
             try:
                 record = self.resolvers[pool_name].query(domain)
                 for A_CNAME in record.response.answer:
@@ -224,7 +244,9 @@ class DNSBrute:
                 iscdn = False
         self.dict_domain[domain] = (str(iscdn), sorted(list_ip))
         self.ptable.add_row([domain.ljust(30), str(iscdn), ', '.join(sorted(list_ip))])
-        print('%s' % str(self.ptable), flush=True)
+        self.console._display_info(str(self.ptable)+'\n', 0, 2, 2)
+        #sleep(2)
+        #print('%s' % str(self.ptable), flush=True)
         #sys.stdout.write(str(self.ptable) + ' ' * (self.console_width - len(str(self.ptable))))
         #msg = "%-30s\t|%-5s\t|%-15s" % (domain.ljust(30), str(iscdn), ', '.join(sorted(list_ip)))
         #sys.stdout.write('\r' + msg + ' ' * (self.console_width - len(msg)))
@@ -235,7 +257,7 @@ class DNSBrute:
     
     #不变
     def _get_suffix(self):
-        print('\033[1;33;40m[!]GET PublicSuffixList, Please Wait Some Times...\033[0m')
+        self.console._display_info('[!]GET PublicSuffixList, Please Wait Some Times...\n', 0, 0, 3)
         suffix_list = fetch()
         self.psl = PublicSuffixList(suffix_list)
     
